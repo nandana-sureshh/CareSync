@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
+const seedDoctorAccounts = require('./config/seed');
 const authRoutes = require('./routes/authRoutes');
 
 const app = express();
@@ -33,6 +34,7 @@ app.use((err, req, res, next) => {
 // ── Start Server ──────────────────────────────────────────────────────────
 const start = async () => {
   await connectDB();
+  await seedDoctorAccounts();
   app.listen(PORT, () => {
     console.log(`[Auth Service] Running on port ${PORT}`);
   });

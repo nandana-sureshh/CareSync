@@ -257,7 +257,8 @@ a:hover { color: var(--color-primary-dark); }
 }
 .badge-pending   { background: #fef3c7; color: #92400e; }
 .badge-confirmed { background: #dcfce7; color: #14532d; }
-.badge-cancelled { background: #fee2e2; color: #7f1d1d; }
+.badge-rejected  { background: #fee2e2; color: #991b1b; }
+.badge-cancelled { background: #f1f5f9; color: #475569; }
 .badge-completed { background: var(--color-primary-bg); color: var(--color-primary-dark); }
 
 /* ─── Alert ───────────────────────────────────────────────────────────── */

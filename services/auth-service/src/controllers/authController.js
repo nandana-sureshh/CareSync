@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 // ── Register ──────────────────────────────────────────────────────────────
+// Public registration always creates a patient.
+// Doctor accounts are seeded by the auth-service seed script.
 const register = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -15,11 +17,11 @@ const register = async (req, res) => {
       return res.status(409).json({ success: false, message: 'User already exists' });
     }
 
-    // role is always 'patient' — set by model default
+    // role defaults to 'patient' via model schema
     const user = await User.create({ email, password });
 
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      { id: user._id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN }
     );
@@ -28,7 +30,7 @@ const register = async (req, res) => {
       success: true,
       message: 'User registered successfully',
       token,
-      user: { id: user._id, email: user.email },
+      user: { id: user._id, email: user.email, role: user.role },
     });
   } catch (error) {
     console.error('[Auth] Register error:', error.message);
@@ -56,7 +58,7 @@ const login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      { id: user._id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN }
     );
@@ -65,7 +67,7 @@ const login = async (req, res) => {
       success: true,
       message: 'Login successful',
       token,
-      user: { id: user._id, email: user.email },
+      user: { id: user._id, email: user.email, role: user.role },
     });
   } catch (error) {
     console.error('[Auth] Login error:', error.message);
@@ -73,7 +75,8 @@ const login = async (req, res) => {
   }
 };
 
-// ── Validate Token (used by other services) ───────────────────────────────
+// ── Validate Token (called by other services) ─────────────────────────────
+// Returns { id, email, role } so downstream services can do role checks.
 const validateToken = async (req, res) => {
   try {
     const authHeader = req.headers['authorization'];

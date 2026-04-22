@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const AUTH_URL    = process.env.REACT_APP_AUTH_URL    || 'http://localhost:4001';
-const PATIENT_URL = process.env.REACT_APP_PATIENT_URL || 'http://localhost:4002';
-const DOCTOR_URL  = process.env.REACT_APP_DOCTOR_URL  || 'http://localhost:4003';
-const APPT_URL    = process.env.REACT_APP_APPOINTMENT_URL || 'http://localhost:4004';
+const AUTH_URL    = 'http://100.52.219.209:4001';
+const PATIENT_URL = 'http://100.52.219.209:4002';
+const DOCTOR_URL  = 'http://100.52.219.209:4003';
+const APPT_URL    = 'http://100.52.219.209:4004';
 
 // Helper: attach Bearer token
 const withAuth = (config = {}) => {
@@ -35,7 +35,12 @@ export const doctorApi = {
 
 // ── Appointment ───────────────────────────────────────────────────────────
 export const appointmentApi = {
-  book:   (data) => axios.post(`${APPT_URL}/api/appointments`, data, withAuth()),
-  getMine: ()    => axios.get(`${APPT_URL}/api/appointments/me`, withAuth()),
-  cancel: (id)   => axios.patch(`${APPT_URL}/api/appointments/${id}/cancel`, {}, withAuth()),
+  // Patient
+  book:    (data) => axios.post(`${APPT_URL}/api/appointments`, data, withAuth()),
+  getMine: ()     => axios.get(`${APPT_URL}/api/appointments/me`, withAuth()),
+  cancel:  (id)   => axios.patch(`${APPT_URL}/api/appointments/${id}/cancel`, {}, withAuth()),
+  // Doctor
+  getDoctorAppointments: () => axios.get(`${APPT_URL}/api/appointments/doctor/mine`, withAuth()),
+  accept: (id) => axios.patch(`${APPT_URL}/api/appointments/${id}/accept`, {}, withAuth()),
+  reject: (id) => axios.patch(`${APPT_URL}/api/appointments/${id}/reject`, {}, withAuth()),
 };

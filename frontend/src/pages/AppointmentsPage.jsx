@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { appointmentApi } from '../api';
 
-const STATUS_FILTERS = ['all', 'pending', 'confirmed', 'completed', 'cancelled'];
+const STATUS_FILTERS = ['all', 'pending', 'confirmed', 'rejected', 'completed', 'cancelled'];
 
 const AppointmentsPage = () => {
   const [appointments, setAppointments] = useState([]);

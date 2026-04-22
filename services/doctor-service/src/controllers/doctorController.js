@@ -65,4 +65,19 @@ const getDoctorById = async (req, res) => {
   }
 };
 
-module.exports = { addDoctor, getDoctors, getDoctorById };
+// ── Get Doctor by Email (inter-service) ──────────────────────────────────
+const getDoctorByEmail = async (req, res) => {
+  try {
+    const doctor = await Doctor.findOne({ email: decodeURIComponent(req.params.email) });
+    if (!doctor) {
+      return res.status(404).json({ success: false, message: 'Doctor not found' });
+    }
+    res.status(200).json({ success: true, data: doctor });
+  } catch (error) {
+    console.error('[Doctor] GetByEmail error:', error.message);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+module.exports = { addDoctor, getDoctors, getDoctorById, getDoctorByEmail };
+

@@ -8,54 +8,31 @@ import DashboardPage from './pages/DashboardPage';
 import DoctorsPage from './pages/DoctorsPage';
 import BookAppointmentPage from './pages/BookAppointmentPage';
 import AppointmentsPage from './pages/AppointmentsPage';
-import DoctorDashboardPage from './pages/DoctorDashboardPage';
 
-// ── Route Guards ───────────────────────────────────────────────────────────
-
-const ProtectedRoute = ({ children, role }) => {
-  const { isAuthenticated, user } = useAuth();
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
-  if (role && user?.role !== role) return <Navigate to="/" replace />;
-  return children;
+// Protected Route wrapper
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
+// Public Route (redirect to dashboard if already logged in)
 const PublicRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
-  return isAuthenticated ? <Navigate to="/" replace /> : children;
+  return isAuthenticated ? <Navigate to="/dashboard" replace /> : children;
 };
 
-// ── Root redirect: sends doctor to /doctor/appointments, patient to /dashboard
-const RootRedirect = () => {
-  const { user, isAuthenticated } = useAuth();
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
-  return user?.role === 'doctor'
-    ? <Navigate to="/doctor/appointments" replace />
-    : <Navigate to="/dashboard" replace />;
-};
-
-// ── App Routes ─────────────────────────────────────────────────────────────
 const AppRoutes = () => (
   <>
     <Navbar />
     <Routes>
-      {/* Root */}
-      <Route path="/" element={<RootRedirect />} />
-
-      {/* Public */}
-      <Route path="/login"    element={<PublicRoute><LoginPage /></PublicRoute>} />
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
       <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
-
-      {/* Patient routes */}
-      <Route path="/dashboard"    element={<ProtectedRoute role="patient"><DashboardPage /></ProtectedRoute>} />
-      <Route path="/doctors"      element={<ProtectedRoute role="patient"><DoctorsPage /></ProtectedRoute>} />
-      <Route path="/book"         element={<ProtectedRoute role="patient"><BookAppointmentPage /></ProtectedRoute>} />
-      <Route path="/appointments" element={<ProtectedRoute role="patient"><AppointmentsPage /></ProtectedRoute>} />
-
-      {/* Doctor routes */}
-      <Route path="/doctor/appointments" element={<ProtectedRoute role="doctor"><DoctorDashboardPage /></ProtectedRoute>} />
-
-      {/* Fallback */}
-      <Route path="*" element={<RootRedirect />} />
+      <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+      <Route path="/doctors" element={<ProtectedRoute><DoctorsPage /></ProtectedRoute>} />
+      <Route path="/book" element={<ProtectedRoute><BookAppointmentPage /></ProtectedRoute>} />
+      <Route path="/appointments" element={<ProtectedRoute><AppointmentsPage /></ProtectedRoute>} />
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   </>
 );

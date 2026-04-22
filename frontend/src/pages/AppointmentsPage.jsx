@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { appointmentApi } from '../api';
 
-const STATUS_FILTERS = ['all', 'pending', 'confirmed', 'rejected', 'completed', 'cancelled'];
+const STATUS_FILTERS = ['all', 'pending', 'confirmed', 'completed', 'cancelled'];
 
 const AppointmentsPage = () => {
   const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading]           = useState(true);
-  const [error, setError]               = useState('');
-  const [filter, setFilter]             = useState('all');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [filter, setFilter] = useState('all');
   const [cancellingId, setCancellingId] = useState(null);
 
   const fetchAppointments = async () => {

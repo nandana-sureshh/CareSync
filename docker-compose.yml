@@ -120,6 +120,14 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        # REACT_APP_* vars are baked into the JS bundle at build time by CRA.
+        # These must point to URLs reachable from the end-user's browser,
+        # not the Docker internal network. localhost works for local deployment.
+        REACT_APP_AUTH_URL: ${REACT_APP_AUTH_URL}
+        REACT_APP_PATIENT_URL: ${REACT_APP_PATIENT_URL}
+        REACT_APP_DOCTOR_URL: ${REACT_APP_DOCTOR_URL}
+        REACT_APP_APPOINTMENT_URL: ${REACT_APP_APPOINTMENT_URL}
     container_name: frontend
     restart: unless-stopped
     ports:

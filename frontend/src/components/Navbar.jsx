@@ -11,77 +11,57 @@ const Navbar = () => {
     navigate('/login');
   };
 
+  const navLinks = [
+    { to: '/dashboard',    label: 'Dashboard' },
+    { to: '/doctors',      label: 'Doctors' },
+    { to: '/book',         label: 'Book Appointment' },
+    { to: '/appointments', label: 'Appointments' },
+  ];
+
   return (
     <nav className="navbar">
-      <NavLink to="/" className="navbar-brand" style={{ textDecoration: 'none' }}>
+      <NavLink to="/" className="navbar-brand">
         <span className="brand-icon">🏥</span>
         CareSync
       </NavLink>
 
       {isAuthenticated && (
         <div className="navbar-nav">
-          <NavLink
-            to="/dashboard"
-            className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
-          >
-            Dashboard
-          </NavLink>
-          <NavLink
-            to="/doctors"
-            className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
-          >
-            Doctors
-          </NavLink>
-          <NavLink
-            to="/book"
-            className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
-          >
-            Book
-          </NavLink>
-          <NavLink
-            to="/appointments"
-            className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
-          >
-            Appointments
-          </NavLink>
+          {navLinks.map(({ to, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
+            >
+              {label}
+            </NavLink>
+          ))}
+
+          <div className="divider" />
+
+          {/* User avatar */}
           <div
             style={{
-              width: 1,
-              height: 24,
-              background: 'var(--color-border)',
-              margin: '0 8px',
-            }}
-          />
-          <div
-            style={{
+              width: 34,
+              height: 34,
+              borderRadius: '50%',
+              background: 'var(--color-primary)',
               display: 'flex',
               alignItems: 'center',
-              gap: 8,
+              justifyContent: 'center',
+              fontSize: 13,
+              fontWeight: 700,
+              color: '#fff',
+              flexShrink: 0,
             }}
+            title={user?.email}
           >
-            <div
-              style={{
-                width: 32,
-                height: 32,
-                borderRadius: '50%',
-                background: 'var(--gradient-primary)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: 12,
-                fontWeight: 700,
-                color: '#fff',
-              }}
-            >
-              {user?.email?.[0]?.toUpperCase() || 'U'}
-            </div>
-            <button
-              onClick={handleLogout}
-              className="btn btn-secondary btn-sm"
-            >
-              Logout
-            </button>
+            {user?.email?.[0]?.toUpperCase() || 'U'}
           </div>
+
+          <button onClick={handleLogout} className="btn btn-secondary btn-sm">
+            Logout
+          </button>
         </div>
       )}
     </nav>

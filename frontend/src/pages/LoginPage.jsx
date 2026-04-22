@@ -4,11 +4,11 @@ import { authApi } from '../api';
 import { useAuth } from '../context/AuthContext';
 
 const LoginPage = () => {
-  const [form, setForm] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
+  const [form, setForm]     = useState({ email: '', password: '' });
+  const [error, setError]   = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
-  const navigate = useNavigate();
+  const { login }  = useAuth();
+  const navigate   = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -24,7 +24,7 @@ const LoginPage = () => {
       login(res.data.user, res.data.token);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }
@@ -33,16 +33,17 @@ const LoginPage = () => {
   return (
     <div className="auth-page">
       <div className="auth-card card animate-fade">
+        {/* Logo */}
         <div className="auth-logo">
           <span className="auth-logo-icon">🏥</span>
           <div className="auth-logo-text">CareSync</div>
-          <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem', marginTop: 4 }}>
-            Healthcare Appointment System
+          <p style={{ color: 'var(--color-text-muted)', fontSize: '0.82rem', marginTop: 4 }}>
+            Patient Portal
           </p>
         </div>
 
         <h2 className="auth-title">Welcome back</h2>
-        <p className="auth-subtitle">Sign in to manage your appointments</p>
+        <p className="auth-subtitle">Sign in to manage your healthcare appointments</p>
 
         {error && (
           <div className="alert alert-error">
@@ -88,7 +89,17 @@ const LoginPage = () => {
           >
             {loading ? (
               <>
-                <span style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', display: 'inline-block', animation: 'spin 0.8s linear infinite' }} />
+                <span
+                  style={{
+                    width: 15,
+                    height: 15,
+                    border: '2px solid rgba(255,255,255,0.4)',
+                    borderTopColor: '#fff',
+                    borderRadius: '50%',
+                    display: 'inline-block',
+                    animation: 'spin 0.75s linear infinite',
+                  }}
+                />
                 Signing in…
               </>
             ) : (
@@ -100,8 +111,8 @@ const LoginPage = () => {
         <div className="auth-divider">or</div>
 
         <p style={{ textAlign: 'center', fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
-          Don't have an account?{' '}
-          <Link to="/register">Create account</Link>
+          Don&apos;t have an account?{' '}
+          <Link to="/register" style={{ fontWeight: 600 }}>Create account</Link>
         </p>
       </div>
     </div>

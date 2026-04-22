@@ -4,7 +4,7 @@ const User = require('../models/User');
 // ── Register ──────────────────────────────────────────────────────────────
 const register = async (req, res) => {
   try {
-    const { email, password, role } = req.body;
+    const { email, password } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({ success: false, message: 'Email and password are required' });
@@ -15,10 +15,11 @@ const register = async (req, res) => {
       return res.status(409).json({ success: false, message: 'User already exists' });
     }
 
-    const user = await User.create({ email, password, role });
+    // role is always 'patient' — set by model default
+    const user = await User.create({ email, password });
 
     const token = jwt.sign(
-      { id: user._id, email: user.email, role: user.role },
+      { id: user._id, email: user.email },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN }
     );
@@ -27,7 +28,7 @@ const register = async (req, res) => {
       success: true,
       message: 'User registered successfully',
       token,
-      user: { id: user._id, email: user.email, role: user.role },
+      user: { id: user._id, email: user.email },
     });
   } catch (error) {
     console.error('[Auth] Register error:', error.message);
@@ -55,7 +56,7 @@ const login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user._id, email: user.email, role: user.role },
+      { id: user._id, email: user.email },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN }
     );
@@ -64,7 +65,7 @@ const login = async (req, res) => {
       success: true,
       message: 'Login successful',
       token,
-      user: { id: user._id, email: user.email, role: user.role },
+      user: { id: user._id, email: user.email },
     });
   } catch (error) {
     console.error('[Auth] Login error:', error.message);

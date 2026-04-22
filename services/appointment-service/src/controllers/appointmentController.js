@@ -64,10 +64,12 @@ const bookAppointment = async (req, res) => {
 // ── Get My Appointments ───────────────────────────────────────────────────
 const getMyAppointments = async (req, res) => {
   try {
-    // Validate user via Auth Service
+    // Validate user via Auth Service — extracts userId from JWT
     const user = await validateAuthToken(req.headers['authorization']);
 
-    const appointments = await Appointment.find({ patientId: user.id }).sort({ appointmentDate: -1 });
+    const appointments = await Appointment.find({ patientId: user.id }).sort({
+      appointmentDate: -1,
+    });
 
     res.status(200).json({
       success: true,
@@ -83,26 +85,6 @@ const getMyAppointments = async (req, res) => {
   }
 };
 
-// ── Get All Appointments (admin) ──────────────────────────────────────────
-const getAllAppointments = async (req, res) => {
-  try {
-    const user = await validateAuthToken(req.headers['authorization']);
-
-    if (user.role !== 'admin') {
-      return res.status(403).json({ success: false, message: 'Forbidden: Admins only' });
-    }
-
-    const appointments = await Appointment.find().sort({ appointmentDate: -1 });
-    res.status(200).json({ success: true, count: appointments.length, data: appointments });
-  } catch (error) {
-    if (error.status) {
-      return res.status(error.status).json({ success: false, message: error.message });
-    }
-    console.error('[Appointment] GetAll error:', error.message);
-    res.status(500).json({ success: false, message: 'Internal server error' });
-  }
-};
-
 // ── Cancel Appointment ────────────────────────────────────────────────────
 const cancelAppointment = async (req, res) => {
   try {
@@ -113,7 +95,8 @@ const cancelAppointment = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Appointment not found' });
     }
 
-    if (appointment.patientId !== user.id && user.role !== 'admin') {
+    // Only the owning patient can cancel
+    if (appointment.patientId !== user.id) {
       return res.status(403).json({ success: false, message: 'Forbidden' });
     }
 
@@ -130,4 +113,4 @@ const cancelAppointment = async (req, res) => {
   }
 };
 
-module.exports = { bookAppointment, getMyAppointments, getAllAppointments, cancelAppointment };
+module.exports = { bookAppointment, getMyAppointments, cancelAppointment };

@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
+const seedDoctors = require('./config/seed');
 const doctorRoutes = require('./routes/doctorRoutes');
 
 const app = express();
@@ -27,6 +28,7 @@ app.use((err, req, res, next) => {
 
 const start = async () => {
   await connectDB();
+  await seedDoctors();
   app.listen(PORT, () => {
     console.log(`[Doctor Service] Running on port ${PORT}`);
   });

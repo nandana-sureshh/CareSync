@@ -3,18 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { authApi } from '../api';
 import { useAuth } from '../context/AuthContext';
 
-const ROLES = [
-  { value: 'patient', label: '🧑 Patient', desc: 'Book and manage appointments' },
-  { value: 'doctor', label: '👨‍⚕️ Doctor', desc: 'Manage your schedule' },
-  { value: 'admin', label: '🛡️ Admin', desc: 'Full system access' },
-];
-
 const RegisterPage = () => {
-  const [form, setForm] = useState({ email: '', password: '', confirmPassword: '', role: 'patient' });
-  const [error, setError] = useState('');
+  const [form, setForm] = useState({ email: '', password: '', confirmPassword: '' });
+  const [error, setError]   = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
-  const navigate = useNavigate();
+  const navigate  = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -33,11 +27,8 @@ const RegisterPage = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await authApi.register({
-        email: form.email,
-        password: form.password,
-        role: form.role,
-      });
+      // role is always 'patient' — set server-side
+      const res = await authApi.register({ email: form.email, password: form.password });
       login(res.data.user, res.data.token);
       navigate('/dashboard');
     } catch (err) {
@@ -50,13 +41,17 @@ const RegisterPage = () => {
   return (
     <div className="auth-page">
       <div className="auth-card card animate-fade">
+        {/* Logo */}
         <div className="auth-logo">
           <span className="auth-logo-icon">🏥</span>
           <div className="auth-logo-text">CareSync</div>
+          <p style={{ color: 'var(--color-text-muted)', fontSize: '0.82rem', marginTop: 4 }}>
+            Patient Portal
+          </p>
         </div>
 
         <h2 className="auth-title">Create your account</h2>
-        <p className="auth-subtitle">Join CareSync today — it's free</p>
+        <p className="auth-subtitle">Join CareSync — your personal healthcare companion</p>
 
         {error && (
           <div className="alert alert-error">
@@ -65,35 +60,6 @@ const RegisterPage = () => {
         )}
 
         <form onSubmit={handleSubmit}>
-          {/* Role Selector */}
-          <div className="form-group">
-            <label className="form-label">I am a…</label>
-            <div style={{ display: 'flex', gap: 8 }}>
-              {ROLES.map((r) => (
-                <button
-                  key={r.value}
-                  type="button"
-                  onClick={() => setForm({ ...form, role: r.value })}
-                  style={{
-                    flex: 1,
-                    padding: '10px 8px',
-                    borderRadius: 'var(--radius-sm)',
-                    border: `1px solid ${form.role === r.value ? 'var(--color-primary)' : 'var(--color-border)'}`,
-                    background: form.role === r.value ? 'rgba(99,102,241,0.15)' : 'transparent',
-                    color: form.role === r.value ? 'var(--color-text)' : 'var(--color-text-muted)',
-                    cursor: 'pointer',
-                    fontSize: '0.8rem',
-                    fontWeight: 600,
-                    transition: 'all 0.2s',
-                    fontFamily: 'var(--font-family)',
-                  }}
-                >
-                  {r.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
           <div className="form-group">
             <label className="form-label" htmlFor="reg-email">Email address</label>
             <input
@@ -116,7 +82,7 @@ const RegisterPage = () => {
               type="password"
               name="password"
               className="form-input"
-              placeholder="Min. 6 characters"
+              placeholder="Minimum 6 characters"
               value={form.password}
               onChange={handleChange}
               required
@@ -131,7 +97,7 @@ const RegisterPage = () => {
               type="password"
               name="confirmPassword"
               className="form-input"
-              placeholder="Re-enter password"
+              placeholder="Re-enter your password"
               value={form.confirmPassword}
               onChange={handleChange}
               required
@@ -151,7 +117,8 @@ const RegisterPage = () => {
         <div className="auth-divider">or</div>
 
         <p style={{ textAlign: 'center', fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
-          Already have an account? <Link to="/login">Sign in</Link>
+          Already have an account?{' '}
+          <Link to="/login" style={{ fontWeight: 600 }}>Sign in</Link>
         </p>
       </div>
     </div>

@@ -35,7 +35,12 @@ export const doctorApi = {
 
 // ── Appointment ───────────────────────────────────────────────────────────
 export const appointmentApi = {
-  book:   (data) => axios.post(`${APPT_URL}/api/appointments`, data, withAuth()),
-  getMine: ()    => axios.get(`${APPT_URL}/api/appointments/me`, withAuth()),
-  cancel: (id)   => axios.patch(`${APPT_URL}/api/appointments/${id}/cancel`, {}, withAuth()),
+  // Patient
+  book:    (data) => axios.post(`${APPT_URL}/api/appointments`, data, withAuth()),
+  getMine: ()     => axios.get(`${APPT_URL}/api/appointments/me`, withAuth()),
+  cancel:  (id)   => axios.patch(`${APPT_URL}/api/appointments/${id}/cancel`, {}, withAuth()),
+  // Doctor
+  getDoctorAppointments: () => axios.get(`${APPT_URL}/api/appointments/doctor/mine`, withAuth()),
+  accept: (id) => axios.patch(`${APPT_URL}/api/appointments/${id}/accept`, {}, withAuth()),
+  reject: (id) => axios.patch(`${APPT_URL}/api/appointments/${id}/reject`, {}, withAuth()),
 };
